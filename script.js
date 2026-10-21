@@ -574,14 +574,16 @@
       migrated = {};
     }
 
+    
     const localTasks = readLocalTasks().filter(t => !migrated[String(t.id)]);
 
-    if (localTasks.length) {
-      const shouldMigrate = cloudTasks.length === 0 ||
-        window.confirm(
-          `You have ${localTasks.length} task(s) saved in this browser. ` +
-          'Add them to your cloud account? Existing cloud tasks will be kept.'
-        );
+    // Only offer migration when the cloud account has no tasks.
+    // Once cloud tasks exist, don't re-upload the browser copy.
+    if (localTasks.length && cloudTasks.length === 0) {
+      const shouldMigrate = window.confirm(
+        `You have ${localTasks.length} task(s) saved in this browser. ` +
+        'Add them to your cloud account?'
+      );
 
       if (shouldMigrate) {
         setAuthMessage('Syncing your saved browser tasks…');
@@ -602,18 +604,13 @@
           }
         }
 
-        if (failed) {
-          setAuthMessage(
-            'Some local tasks could not be synced. Your browser backup is intact; reload to retry.',
-            true
-          );
-        } else {
-          setAuthMessage('Your browser tasks have been added to your cloud account.');
-        }
-      } else {
         setAuthMessage(
-          'Cloud tasks loaded. Your browser-only tasks remain saved on this device.'
+          failed
+            ? 'Some local tasks could not be synced. Your browser backup is intact.'
+            : 'Your browser tasks have been added to your cloud account.'
         );
+      } else {
+        setAuthMessage('Cloud tasks loaded. Browser-only tasks remain on this device.');
       }
     } else {
       setAuthMessage('Cloud tasks loaded.');
