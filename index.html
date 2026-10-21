@@ -1,0 +1,560 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Daydream ☁️ Ocean Task Studio</title>
+  <link rel="stylesheet" href="style.css">
+
+  <!-- Supabase JavaScript library -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- Ocean-themed login styling -->
+  <style>
+    :root {
+      --login-background: #f2f8fc;
+      --login-card: #ffffff;
+      --login-blue: #78b6df;
+      --login-blue-hover: #559ac9;
+      --login-text: #304b63;
+      --login-muted: #8096a8;
+      --login-border: #dce9f2;
+    }
+
+    #auth-screen {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      overflow-y: auto;
+      background:
+        radial-gradient(circle at 15% 20%, #d8edfb 0, transparent 32%),
+        radial-gradient(circle at 85% 80%, #dceff9 0, transparent 35%),
+        var(--login-background);
+      color: var(--login-text);
+      font-family: Arial, sans-serif;
+    }
+
+    #auth-screen[hidden] {
+      display: none !important;
+    }
+
+    .ocean-login-card {
+      width: 100%;
+      max-width: 420px;
+      padding: 38px 32px;
+      text-align: center;
+      background: var(--login-card);
+      border: 1px solid var(--login-border);
+      border-radius: 24px;
+      box-shadow: 0 12px 40px rgba(64, 111, 146, 0.12);
+    }
+
+    .ocean-login-logo {
+      margin-bottom: 8px;
+      font-size: 48px;
+    }
+
+    .ocean-login-card h1 {
+      margin: 0;
+      color: var(--login-text);
+      font-size: 32px;
+    }
+
+    .ocean-login-subtitle {
+      margin: 8px 0 22px;
+      color: var(--login-muted);
+      font-size: 14px;
+    }
+
+    .ocean-login-decoration {
+      margin: 14px 0 24px;
+      font-size: 25px;
+      letter-spacing: 8px;
+    }
+
+    .ocean-login-card h2 {
+      margin: 0 0 10px;
+      color: var(--login-text);
+      font-size: 23px;
+    }
+
+    .ocean-login-description {
+      margin: 0 0 24px;
+      color: var(--login-muted);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .ocean-login-form {
+      text-align: left;
+    }
+
+    .ocean-login-form label {
+      display: block;
+      margin: 16px 0 7px;
+      color: var(--login-text);
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .ocean-login-form input {
+      box-sizing: border-box;
+      width: 100%;
+      padding: 13px 14px;
+      color: var(--login-text);
+      background: #f8fbfe;
+      border: 1px solid var(--login-border);
+      border-radius: 12px;
+      outline: none;
+      font: inherit;
+    }
+
+    .ocean-login-form input:focus {
+      border-color: var(--login-blue);
+      box-shadow: 0 0 0 3px rgba(120, 182, 223, 0.18);
+    }
+
+    .ocean-login-button {
+      width: 100%;
+      margin-top: 22px;
+      padding: 14px;
+      color: #ffffff;
+      background: var(--login-blue);
+      border: none;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+
+    .ocean-login-button:hover {
+      background: var(--login-blue-hover);
+      transform: translateY(-1px);
+    }
+
+    .ocean-login-message {
+      min-height: 20px;
+      margin-top: 14px;
+      color: var(--login-muted);
+      font-size: 13px;
+      line-height: 1.5;
+      overflow-wrap: anywhere;
+    }
+
+    .ocean-login-footer {
+      margin-top: 24px;
+      color: var(--login-muted);
+      font-size: 12px;
+    }
+
+    @media (max-width: 480px) {
+      #auth-screen {
+        padding: 16px;
+      }
+
+      .ocean-login-card {
+        padding: 30px 22px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- OCEAN LOGIN SCREEN -->
+  <!-- Hidden by default so it does not cover the app unless shown. -->
+  <section id="auth-screen" hidden>
+    <div class="ocean-login-card">
+      <div class="ocean-login-logo" aria-hidden="true">☁️</div>
+      <h1>Daydream</h1>
+      <p class="ocean-login-subtitle">Ocean Task Studio</p>
+
+      <div class="ocean-login-decoration" aria-hidden="true">
+        🌊 🫧 🐚
+      </div>
+
+      <h2>Welcome back! 🩵</h2>
+      <p class="ocean-login-description">
+        Your little corner of the ocean is waiting.
+        Take a breath and start with one little wave.
+      </p>
+
+      <!--
+        Authentication must be connected to your existing
+        Supabase login logic in script.js before using this form.
+      -->
+      <form id="ocean-login-form" class="ocean-login-form">
+        <label for="ocean-login-email">Email address</label>
+        <input
+          id="ocean-login-email"
+          name="email"
+          type="email"
+          placeholder="you@example.com"
+          autocomplete="email"
+          required
+        >
+
+        <label for="ocean-login-password">Password</label>
+        <input
+          id="ocean-login-password"
+          name="password"
+          type="password"
+          placeholder="Enter your password"
+          autocomplete="current-password"
+          required
+        >
+
+        <button type="submit" class="ocean-login-button">
+          Log in 🩵
+        </button>
+
+        <p
+          id="ocean-login-message"
+          class="ocean-login-message"
+          role="status"
+          aria-live="polite"
+        ></p>
+      </form>
+
+      <p class="ocean-login-footer">
+        Made with 🩵 and a little ocean magic.
+      </p>
+    </div>
+  </section>
+
+  <!-- EXISTING APP -->
+  <div class="app-container">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="logo">
+        <span class="logo-icon">☁️</span>
+        <h2>Daydream</h2>
+        <p>Ocean Task Studio</p>
+      </div>
+
+      <nav class="sidebar-nav" aria-label="Main navigation">
+        <button type="button" class="nav-item active" data-view="dashboard">
+          <span>🏠</span> Dashboard
+        </button>
+        <button type="button" class="nav-item" data-view="tasks">
+          <span>🐚</span> My Tasks
+        </button>
+        <button type="button" class="nav-item" data-view="calendar">
+          <span>📅</span> Calendar
+        </button>
+        <button type="button" class="nav-item" data-view="planner">
+          <span>📝</span> Daily Planner
+        </button>
+        <button type="button" class="nav-item" data-view="completed">
+          <span>🫧</span> Completed
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <p>🌊 One little wave at a time.</p>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+
+      <header class="page-header">
+        <div>
+          <h1 id="page-title">My Ocean Dashboard ☁️</h1>
+          <p id="page-subtitle">One little wave at a time. 🌊</p>
+        </div>
+      </header>
+
+      <!-- 1. DASHBOARD -->
+      <section id="dashboard-view" class="page-view">
+
+        <div class="dashboard-welcome">
+          <div>
+            <h2>Welcome to your little corner of the ocean! 🩵</h2>
+            <p>Take a breath, check your progress, and tackle one little wave at a time.</p>
+          </div>
+          <div class="dashboard-illustration" aria-hidden="true">
+            ☁️🌊🐚
+          </div>
+        </div>
+
+        <section id="dashboard-stats" class="dashboard-stats"
+          aria-label="Task statistics">
+
+          <div class="stat-card">
+            <span class="stat-icon">🐚</span>
+            <div>
+              <p>Total Tasks</p>
+              <h3 id="total-tasks">0</h3>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <span class="stat-icon">🫧</span>
+            <div>
+              <p>Completed</p>
+              <h3 id="completed-tasks">0</h3>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <span class="stat-icon">🌤️</span>
+            <div>
+              <p>Due Today</p>
+              <h3 id="due-today">0</h3>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <span class="stat-icon">🌊</span>
+            <div>
+              <p>Open Tasks</p>
+              <h3 id="open-tasks">0</h3>
+            </div>
+          </div>
+        </section>
+
+        <section class="dashboard-quick-actions">
+          <div class="section-heading">
+            <div>
+              <h2>Your Next Little Wave 🌊</h2>
+              <p>Choose where you want to go next.</p>
+            </div>
+          </div>
+
+          <div class="quick-action-card">
+            <div>
+              <span class="quick-action-icon">🐚</span>
+              <h3>Got something to do?</h3>
+              <p>Add a task and get it out of your head.</p>
+            </div>
+            <button type="button" id="dashboard-add-task-btn">
+              + Add a Task
+            </button>
+          </div>
+
+          <div class="quick-links">
+            <button type="button" class="quick-link" data-go-view="tasks">
+              🐚 View My Tasks
+            </button>
+            <button type="button" class="quick-link" data-go-view="completed">
+              🫧 View Completed
+            </button>
+            <button type="button" class="quick-link" data-go-view="calendar">
+              📅 Open Calendar
+            </button>
+            <button type="button" class="quick-link" data-go-view="planner">
+              📝 Open Daily Planner
+            </button>
+          </div>
+        </section>
+      </section>
+
+      <!-- 2. MY TASKS -->
+      <section id="active-tasks-view" class="task-section page-view" hidden>
+
+        <div class="section-heading">
+          <div>
+            <h2>My Little Tasks 🐚</h2>
+            <p>Small steps still move you forward.</p>
+          </div>
+          <button type="button" id="add-task-btn">+ Add Task</button>
+        </div>
+
+        <div id="task-filters" class="task-filters"
+          aria-label="Filter tasks by priority">
+
+          <button type="button" class="filter-btn active"
+            data-priority="All" aria-pressed="true">All Tasks</button>
+          <button type="button" class="filter-btn"
+            data-priority="High" aria-pressed="false">🦈 High</button>
+          <button type="button" class="filter-btn"
+            data-priority="Medium" aria-pressed="false">🫧 Medium</button>
+          <button type="button" class="filter-btn"
+            data-priority="Low" aria-pressed="false">🌱 Low</button>
+        </div>
+
+        <div class="task-sorting">
+          <label for="task-sort">Sort tasks:</label>
+          <select id="task-sort">
+            <option value="default">Default order</option>
+            <option value="priority">Priority: High to Low</option>
+            <option value="due-date">Due date: Earliest first</option>
+            <option value="start-time">Start time: Earliest first</option>
+            <option value="newest">Newest first</option>
+          </select>
+        </div>
+
+        <div class="task-placeholder">
+          <div class="empty-state-icon">🐚</div>
+          <h3>Your ocean is peaceful.</h3>
+          <p>No unfinished tasks yet. Add one when you're ready!</p>
+        </div>
+      </section>
+
+      <!-- 3. CALENDAR -->
+      <section id="calendar-view" class="task-section page-view" hidden>
+
+        <div class="section-heading">
+          <div>
+            <h2>My Ocean Calendar 📅</h2>
+            <p>Every little plan has its own day.</p>
+          </div>
+        </div>
+
+        <div class="calendar-toolbar">
+          <button type="button" id="prev-month"
+            aria-label="Previous month">←</button>
+
+          <select id="calendar-month-select" aria-label="Select month">
+            <option value="0">January</option>
+            <option value="1">February</option>
+            <option value="2">March</option>
+            <option value="3">April</option>
+            <option value="4">May</option>
+            <option value="5">June</option>
+            <option value="6">July</option>
+            <option value="7">August</option>
+            <option value="8">September</option>
+            <option value="9">October</option>
+            <option value="10">November</option>
+            <option value="11">December</option>
+          </select>
+
+          <select id="calendar-year-select" aria-label="Select year"></select>
+
+          <button type="button" id="next-month"
+            aria-label="Next month">→</button>
+          <button type="button" id="today-btn">Today</button>
+        </div>
+
+        <div class="calendar-card">
+          <div class="calendar-weekdays" aria-hidden="true">
+            <div>Sun</div>
+            <div>Mon</div>
+            <div>Tue</div>
+            <div>Wed</div>
+            <div>Thu</div>
+            <div>Fri</div>
+            <div>Sat</div>
+          </div>
+
+          <div id="calendar-grid" class="calendar-grid"></div>
+        </div>
+
+        <section class="calendar-agenda">
+          <h3 id="selected-date-title">Select a date 🐚</h3>
+          <p id="calendar-agenda-empty">
+            Your tasks for the selected day will appear here.
+          </p>
+          <div id="calendar-agenda-list" class="task-list"></div>
+        </section>
+      </section>
+
+      <!-- 4. DAILY PLANNER -->
+      <section id="planner-view" class="task-section page-view" hidden>
+
+        <div class="planner-heading">
+          <div>
+            <h2>Daily Planner 📝</h2>
+            <p>Give today a little structure. One wave at a time. 🩵</p>
+          </div>
+
+          <div class="planner-date">
+            <label for="planner-date">Planning date</label>
+            <input type="date" id="planner-date">
+          </div>
+        </div>
+
+        <div class="planner-summary">
+          <div class="planner-summary-card">
+            <span>Tasks for the day 🐚</span>
+            <strong id="planner-total">0</strong>
+          </div>
+
+          <div class="planner-summary-card">
+            <span>Completed 🫧</span>
+            <strong id="planner-completed">0</strong>
+          </div>
+
+          <div class="planner-summary-card">
+            <span>Still to do 🌊</span>
+            <strong id="planner-remaining">0</strong>
+          </div>
+        </div>
+
+        <div class="planner-progress-card">
+          <div class="planner-progress-heading">
+            <h3>Daily progress 🌤️</h3>
+            <span id="planner-progress-label">0%</span>
+          </div>
+
+          <div class="planner-progress-track"
+            role="progressbar"
+            aria-label="Daily task completion"
+            aria-valuemin="0"
+            aria-valuemax="100"
+            aria-valuenow="0"
+            id="planner-progress-track">
+
+            <div id="planner-progress-bar" class="planner-progress-fill"></div>
+          </div>
+        </div>
+
+        <div class="planner-task-card">
+          <div class="planner-section-heading">
+            <div>
+              <h3>Today's focus 🎯</h3>
+              <p>Tasks due on this date will appear here, ordered by their scheduled start time.</p>
+            </div>
+          </div>
+
+          <div id="planner-task-list" class="task-list"></div>
+
+          <div id="planner-empty" class="planner-empty">
+            <div class="empty-state-icon">☁️</div>
+            <h3>Your day is a blank page.</h3>
+            <p>No tasks are scheduled for this date yet. Add a task and give your day some direction.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 5. COMPLETED TASKS -->
+      <section id="completed-tasks-view"
+        class="task-section page-view" hidden>
+
+        <div class="section-heading">
+          <div>
+            <h2>Completed Tasks 🫧</h2>
+            <p>Look at all the little waves you've conquered.</p>
+          </div>
+        </div>
+
+        <div id="completed-placeholder" class="page-placeholder">
+          <div class="empty-state-icon">🫧</div>
+          <h3>No completed tasks yet.</h3>
+          <p>Tasks you complete will show up here.</p>
+        </div>
+
+        <div id="completed-task-list" class="task-list"></div>
+      </section>
+
+      <footer class="main-footer">
+        <p>Made with 🩵 and a little ocean magic.</p>
+      </footer>
+
+    </main>
+  </div>
+
+  <!-- Existing website JavaScript -->
+  <script src="script.js"></script>
+</body>
+</html>
